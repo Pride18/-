@@ -1,7 +1,7 @@
 import io
 import sys
 
-from PyQt6 import uic  # Импортируем uic
+from PyQt6 import uic, QtGui, QtCore
 from PyQt6.QtWidgets import QApplication, QMainWindow, QInputDialog
 
 template = """<?xml version="1.0" encoding="UTF-8"?>
@@ -209,14 +209,25 @@ class Order(QMainWindow):
         uic.loadUi(f, self)
         self.Choices.buttonClicked.connect(self.choice)
         self.finish.clicked.connect(self.run)
+        self.choice1.setText('')
+        self.choice2.setText('')
+        self.choice3.setText('')
+        self.choice4.setText('')
 
     def choice(self, btn):
         drink, ok_pressed = QInputDialog.getItem(
             self, "Выбор", "Выберите ваш напиток",
-            ("Газированная вода", "Мятный сироп", "Апельсиновый сок", "Лимонад “Мятный”", "Лимонад “Заводной апельсин”"
-             , "Лимонад ‘Тройной”"), 1, False)
+            ("Газированная вода", "Мятный сироп", "Апельсиновый сок", "Лимонад “Мятный”", "Лимона``д “Заводной апельсин”"
+             , "Лимонад ‘Тройной”", "Ничего"), 1, False)
         if ok_pressed:
-            btn.setText(drink)
+            if drink != 'Ничего':
+                btn.setIcon(QtGui.QIcon(f'{drink}.png'))
+                btn.setIconSize(QtCore.QSize(85, 85))
+            else:
+                btn.setIcon(QtGui.QIcon())
+
+
+
 
     def run(self):
         pass
