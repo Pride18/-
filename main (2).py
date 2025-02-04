@@ -203,7 +203,6 @@ slots = ['', '', '', '']
 
 class Order(QMainWindow):
     count = 0
-
     def __init__(self):
         super().__init__()
         f = io.StringIO(template)
