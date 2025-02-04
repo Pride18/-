@@ -216,20 +216,23 @@ class Order(QMainWindow):
         self.choice4.setText('')
 
     def choice(self, btn):
+        NOTHING = 'Ничего'
         drink, ok_pressed = QInputDialog.getItem(
             self, "Выбор", "Выберите ваш напиток",
             ("Газированная вода", "Мятный сироп", "Апельсиновый сок", "Лимонад “Мятный”", "Лимонад “Заводной апельсин”"
              , "Лимонад ‘Тройной”", "Ничего"), 0, False)
         if ok_pressed:
             slot = int(btn.objectName()[-1]) - 1
-            if drink != 'Ничего':
-                slots[slot] = ''
+            if drink != NOTHING:
                 btn.setIcon(QtGui.QIcon(f'{drink}.png'))
                 btn.setIconSize(QtCore.QSize(85, 85))
             else:
                 slots[slot] = drink
                 btn.setIcon(QtGui.QIcon())
-            print(slot, slots)
+            if drink != NOTHING:
+                slots[slot] = drink
+            else:
+                slots[slot] = ''
 
     def run(self):
         pass
