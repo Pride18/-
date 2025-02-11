@@ -1,8 +1,70 @@
 import io
 import sys
 
+
 from PyQt5 import uic, QtGui, QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QInputDialog
+
+import RPi.GPIO as GPIO
+import time
+
+
+class Pump:
+    def __init__(self, pin):
+        GPIO.setmode(GPIO.BOARD)
+        self.pin = pin
+
+    def pour(self, time_delay):  # Время в секундах
+        GPIO.setup(self.pin, GPIO.OUT)
+        time.sleep(time_delay)
+        GPIO.setup(self.pin, GPIO.IN)
+
+
+class Motor:
+    def __init__(self, pin):
+        GPIO.setmode(GPIO.BOARD)
+        self.pin = pin
+
+    def rotate(self, time_delay, reverse=False):  # Время в секундах
+        
+        print("rotate start")
+        time.sleep(time_delay)
+        GPIO.setup(self.pin, GPIO.OUT)
+        print("rotate stop")
+
+
+juice = Pump(18)
+water = Pump(16)
+mint = Pump(22)
+
+
+
+recipes = {  # (water_units, juice_units, mint_units)
+    "": (0, 0, 0),
+    "Газированная вода": (5, 0, 0),
+    "Мятный сироп": (0, 0, 1),
+    "Апельсиновый сок": (0, 4, 0),
+    "Лимонад “Мятный”": (8, 0, 2),
+    "Лимонад “Заводной апельсин”": (3, 5, 0),
+    "Лимонад ‘Тройной”": (3.5, 4.5, 1)
+}
+
+initial_time_rotate = 1  # Время для оборота первого стакана на выдачу
+time_per_cup = 1  # Время для поворота на одного стакана.
+time_per_10ml = 1
+
+
+def process_the_order(slots):
+    for i in range(len(slots)):
+        
+        water_time, juice_time, mint_time = recipes[slots[i]]
+        print(1, water_time, juice_time, mint_time)
+        water.pour(time_per_10ml * water_time)
+        juice.pour(time_per_10ml * juice_time)
+        mint.pour(time_per_10ml * mint_time)
+
+
+
 
 template = """<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
@@ -234,7 +296,7 @@ class Order(QMainWindow):
                 slots[slot] = ''
 
     def run(self):
-        pass
+        process_the_order(slots)
 
 
 if __name__ == '__main__':
